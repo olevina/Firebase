@@ -41,19 +41,44 @@ database.ref().on("child_added", function (snapshot) {
     console.log(snapshot.val().frequency);
 
     var now = moment().format("HH:mm");
-    console.log(now);
-    var first = moment(snapshot.val().time).format("HH:mm");
-    console.log(first);
+    console.log("this is my now var:" + now);
+    var ftime = snapshot.val().time;
+    console.log("this is my ftime: " + ftime)
+    var splitTimes = ftime.split(":");
+    var hr = splitTimes[0];
+   // hr = moment.hour(parseInt(hr));
+     var sett = moment().set("hour", hr);
+    var min = splitTimes[1];
+    sett.set('minute',min);
+    console.log("this is my sett var: " + sett)
+    
+    var nt = next(sett,snapshot.val().frequency);
+
+
+    var first = moment(hr).minute(min) ;
+    first =moment(first).format("HH:mm")
+    console.log( "this is my splitTime var " + hr);
+    console.log( "this is my min var " + nt);
+    //console.log(
+        var na = moment(nt).fromNow('mm');
     // var nextTrain = function(){
     //     moment(first.add(snapshot.val().frequency));
     // console.log(nextTrain);
   
     // };
 
-    $("#appendedItems").append("<tr><td> " + snapshot.val().name + "</td><td>" + snapshot.val().destination  +"</td><td>" + snapshot.val().frequency + "</td><td>"+ snapshot.val().nextTrain + "</td><td>");
+    $("#appendedItems").append("<tr><td> " + snapshot.val().name + "</td><td>" + snapshot.val().destination  +"</td><td>" + snapshot.val().frequency + "</td><td>"+ moment(nt).format("HH:mm") + "</td><td>" + na + "</td><td>");
 
     // Handle the errors
 }
     , function (errorObject) {
         console.log("Errors handled: " + errorObject.code);
     });
+
+    var next = function(startTime,freq){
+        while(startTime<moment()){
+        startTime.add(freq,'m')
+        }
+        
+    return startTime;
+    }
